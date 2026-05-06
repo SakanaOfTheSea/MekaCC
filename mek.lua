@@ -2430,6 +2430,19 @@ local function display()
                     end
                     if msg.role == "turbine" then pcall(playVoice, "turbine_back_online", h.displayName or msg.host) end
                 end
+                -- Even if the host never went "offline" (janitorLoop only flips that bit
+                -- after 30s of silence, and a typical reboot completes in ~5s), telemetry
+                -- arriving more than 2s after we issued the reboot is unambiguously the
+                -- rebooted host coming back. Clear the in-flight reboot state so the
+                -- "REBOOTING Ns" tag stops counting up forever in the SCRAM panel.
+                do
+                    local rkey2 = msg.role .. "/" .. msg.host
+                    local rs2 = rebootState[rkey2]
+                    if rs2 and rs2.stage == "sent" and (os.epoch("utc") - rs2.at) > 2000 then
+                        pcall(playVoice, "system_host_reboot_ok", h.displayName or msg.host)
+                        rebootState[rkey2] = nil
+                    end
+                end
                 -- Drop local scram-cfg cache so we always edit against latest host state.
                 localScramCfg[msg.role .. "/" .. msg.host] = nil
                 h.ringMain:push(sparkValue(msg.role, h.last))
