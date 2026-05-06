@@ -1,0 +1,13 @@
+# CC:Tweaked runtime artifacts (per-PC state, not source)
+/log/
+/cfg/
+*.tmp
+*.bak
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Editor junk
+.vscode/
+*.code-workspace
