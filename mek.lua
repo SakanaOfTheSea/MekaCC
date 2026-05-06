@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 -- mek.lua  (single-file bundle of CC-Mekanism-ATM9)
 --
 -- Сделано Бобрами  ;)
