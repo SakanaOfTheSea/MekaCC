@@ -545,15 +545,22 @@ local function makeCmdListener(cfg, extra)
     return function()
         while true do
             local _, msg = rednet.receive(protocol.PROTOCOL)
-            if type(msg) == "table" and msg.kind == "command" and msg.target == cfg.hostName then
-                if msg.action == "reboot" then
-                    print("[host] reboot command received -> os.reboot()")
-                    sleep(0.2)  -- let the print flush; broadcast already sent.
-                    os.reboot()
-                elseif msg.action == "ping" then
-                    -- no-op, just keeps the host responsive in tests
-                elseif extra then
-                    pcall(extra, msg)
+            if type(msg) == "table" and msg.kind == "command" then
+                -- Always log so operators can confirm the host hears the controller.
+                -- A mismatch between cfg.hostName and msg.target is the #1 reason a
+                -- Reboot button "does nothing" on a remote host.
+                print(("[host] cmd action=%s target=%s (mine=%s)"):format(
+                    tostring(msg.action), tostring(msg.target), tostring(cfg.hostName)))
+                if msg.target == cfg.hostName then
+                    if msg.action == "reboot" then
+                        print("[host] reboot command received -> os.reboot()")
+                        sleep(0.2)  -- let the print flush; broadcast already sent.
+                        os.reboot()
+                    elseif msg.action == "ping" then
+                        -- no-op, just keeps the host responsive in tests
+                    elseif extra then
+                        pcall(extra, msg)
+                    end
                 end
             end
         end
