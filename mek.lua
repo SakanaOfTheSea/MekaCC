@@ -2392,7 +2392,6 @@ local function display()
     local localScramCfg = {}  -- key=role/host -> editable copy of host scram rules
     local lastMatrixScramAt = 0
     local function rednetLoop()
-    local function rednetLoop()
         while true do
             local _, msg = rednet.receive(protocol.PROTOCOL)
             if type(msg) == "table" and msg.kind == "telemetry" then
