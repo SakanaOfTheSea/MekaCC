@@ -436,6 +436,10 @@ end
 ------------------------------------------------------------
 -- HOSTS
 ------------------------------------------------------------
+
+local findPeripheralRetry
+local makeCmdListener
+
 local function hostInduction()
     local cfg = util.loadConfig("/cfg/induction.cfg", {
         pollInterval=0.5, broadcastEvery=1, hostName="induction-1",
@@ -527,7 +531,7 @@ end
 -- a server restart the wired-modem network can take a few seconds to re-attach all
 -- peripherals; without this hosts would error() and stay dead until manually
 -- rebooted, which is exactly the failure mode we are trying to fix.
-local function findPeripheralRetry(typeName)
+function findPeripheralRetry(typeName)
     local p = peripheral.find(typeName)
     if p then return p end
     print(("[host] peripheral '%s' not found yet, retrying every 2s..."):format(typeName))
@@ -541,7 +545,7 @@ end
 
 -- Universal command listener used by every host loop. Handles reboot uniformly so
 -- the display can recover stuck hosts; per-role actions are forwarded to extra(msg).
-local function makeCmdListener(cfg, extra)
+function makeCmdListener(cfg, extra)
     return function()
         while true do
             local _, msg = rednet.receive(protocol.PROTOCOL)
