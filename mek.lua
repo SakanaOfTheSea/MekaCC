@@ -3015,8 +3015,13 @@ local function doSetup()
     print(); print(L.saved); sleep(1.5); os.reboot()
 end
 
-local args = { ... }
-local cmd = args[1]
+-- Entry point. Avoid top-level `...` — some CC:Tweaked / Cobalt build chains reject
+-- it with "cannot use '...' outside a vararg function" even though standard Lua
+-- allows varargs in the main chunk. Read the first shell arg via the `arg` global
+-- when present, otherwise just fall through to the saved-role / setup flow.
+local cmd
+if type(arg) == "table" then cmd = arg[1] end
+
 if cmd == "setup" then
     doSetup()
 elseif cmd and ROLES[cmd] then
