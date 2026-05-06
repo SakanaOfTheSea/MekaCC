@@ -2453,20 +2453,27 @@ local function display()
                     if cfg.voiceDebug then print("[voice/eval] bootstrap " .. msg.role .. "/" .. msg.host) end
                 end
                 -- System rule: auto-SCRAM all fission reactors when induction matrix is (nearly) full.
+                -- Only target reactors that are actually running, and only fire alarms/notify if at
+                -- least one SCRAM was sent — otherwise this loop spams chat/console every telemetry
+                -- tick while the matrix sits at 100% with all reactors already off.
                 if cfg.scramOnMatrixFull and msg.role == "induction" then
                     local pct = h.last.pct or 0
                     if pct >= (cfg.matrixFullThreshold or 99.8) then
                         local now = os.epoch("utc")
                         if now - lastMatrixScramAt > 5000 then
-                            lastMatrixScramAt = now
                             local n = 0
                             for _, ho in pairs(hosts) do
-                                if ho.role == "fission" then sendCmd(ho.hostName, "scram"); n = n + 1 end
+                                if ho.role == "fission" and ho.last and ho.last.status == true then
+                                    sendCmd(ho.hostName, "scram"); n = n + 1
+                                end
                             end
-                            print(("[display] AUTO-SCRAM: matrix %.1f%% >= %.1f%% (sent to %d fission host(s))"):format(pct, cfg.matrixFullThreshold or 99.8, n))
-                            local resolved = util.resolveAlarm(cfg.alarmName)
-                            if speaker and resolved and resolved.path then queueAudio(resolved.path) end
-                            notify(3, "matrix-full", ("AUTO-SCRAM: matrix %.1f%% (>=%g%%)"):format(pct, cfg.matrixFullThreshold or 99.8))
+                            if n > 0 then
+                                lastMatrixScramAt = now
+                                print(("[display] AUTO-SCRAM: matrix %.1f%% >= %.1f%% (sent to %d fission host(s))"):format(pct, cfg.matrixFullThreshold or 99.8, n))
+                                local resolved = util.resolveAlarm(cfg.alarmName)
+                                if speaker and resolved and resolved.path then queueAudio(resolved.path) end
+                                notify(3, "matrix-full", ("AUTO-SCRAM: matrix %.1f%% (>=%g%%)"):format(pct, cfg.matrixFullThreshold or 99.8))
+                            end
                         end
                     end
                 end
