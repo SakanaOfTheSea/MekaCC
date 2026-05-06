@@ -2,8 +2,6 @@
 -- mek.lua  (single-file bundle of CC-Mekanism-ATM9)
 --
 -- Сделано Бобрами  ;)
--- (CC:Tweaked monitors render only an 8-bit ASCII font, so on the screen the
---  credit appears transliterated as "Sdelano Bobrami" in the header.)
 --
 -- Usage on every computer:
 --   pastebin get <PASTE_ID> startup
