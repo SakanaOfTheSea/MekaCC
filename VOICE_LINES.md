@@ -112,10 +112,10 @@ Severity levels (same as alarm severity):
 | `system_startup`        | 1 | display PC boots | "SCADA system online." | "Система мониторинга включена." |
 | `system_host_lost`      | 2 | any host stale > 30s | "Host telemetry lost: <name>." | "Потеряна связь с указанным устройством." |
 | `system_host_back`      | 1 | host telemetry resumes | "Host reconnected: <name>." | "Связь восстановлена для указанного устройства." |
-| `system_host_reboot`    | 2 | auto-reboot fires after `autoRebootSilent` seconds of silence | "Host unresponsive. Sending reboot command." | "Узел не отвечает. Отправлена команда перезагрузки." |
+| `system_host_reboot`    | 2 | auto-reboot fires after `autoRebootSilent` seconds of silence | "Host unresponsive. Sending reboot command." | "Внимание: Один из узлов не отвечает. Отправлена команда перезагрузки." |
 | `system_host_reboot_ok` | 1 | host returns after a remote reboot | "Host rebooted and back online." | "Узел перезагружен и снова на связи." |
-| `system_host_reboot_fail` | 3 | host still silent after one reboot attempt | "Host did not respond to reboot. Manual check required." | "Узел не отвечает после перезагрузки. Требуется ручная проверка." |
-| `system_host_reboot_manual` | 1 | operator pressed Reboot button | "Operator-issued reboot dispatched." | "Перезагрузка узла отправлена оператором." |
+| `system_host_reboot_fail` | 3 | host still silent after one reboot attempt | "Host did not respond to reboot. Manual check required." | "Внимание: Узел не отвечает после перезагрузки. Требуется ручная проверка." |
+| `system_host_reboot_manual` | 1 | operator pressed Reboot button | "Operator-issued reboot dispatched." | "Выполнена перезагрузка узла оператором." |
 | `system_auto_throttle`  | 1 | auto-throttle adjusts burn rate | "Burn rate auto-adjusted to <N> millibuckets per tick." | "Скорость деления автоматически изменена до <N> миллибаккетов на тик." |
 | `system_auto_restart`   | 2 | auto-restart fires | "Auto-restart engaged on <name>." | "Автоматический перезапуск активирован для указанного устройства." |
 | `system_alarm_test`     | 1 | TEST ALARM button | "Alarm test." | "Произведён тест системы оповещения." |
